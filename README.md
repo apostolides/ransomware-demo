@@ -2,6 +2,13 @@
 
 The following scripts aim to simulate sample ransomware behavior for studying purposes by recursively encrypting files from a specified starting directory.
 
+## Install dependencies
+
+Install dependencies with:
+```
+python3 -m pip install cryptography
+```
+
 ## Generate keys
 
 Generate public/private key pair with:
