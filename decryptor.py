@@ -69,6 +69,19 @@ def decrypt_file(filepath, fernetobj):
         original_file.close()
 
 
+def get_target_directories():
+    current_user = os.getlogin()
+    current_os = os.name
+    if current_os == "posix":
+        return ["./protected"]
+    else:
+        base_dir = f"C:\\Users\\{current_user}"
+        directories = []
+        subdirs = ["\\Desktop", "\\Documents"]
+        for subdir in subdirs:
+            directories.append(base_dir + subdir) 
+        return directories
+
 def remove_file(filepath):
     os.remove(filepath)
 
@@ -82,9 +95,10 @@ symkey = decrypt_with_private_key(privkey, symkey)
 
 f = Fernet(symkey)
 
-for path, curdir, files in os.walk("./protected"):
-    for file in files:
-        filepath = os.path.join(path, file)
-        if filepath.endswith(".enc"):
-            decrypt_file(filepath, f)
-            remove_file(filepath)
+for dir in get_target_directories():
+    for path, curdir, files in os.walk(dir):
+        for file in files:
+            filepath = os.path.join(path, file)
+            if filepath.endswith(".enc"):
+                decrypt_file(filepath, f)
+                remove_file(filepath)
