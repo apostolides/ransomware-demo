@@ -72,8 +72,12 @@ def decrypt_file(filepath, fernetobj):
 def remove_file(filepath):
     os.remove(filepath)
 
+def get_symkey_filepath():
+    keyfilepath = "./protected/sym.key" if os.name == "posix" else f"C:\\Users\\{os.getlogin()}\\Desktop\\sym.key" 
+    return keyfilepath
+
 privkey = load_private_key()
-symkey = load_encrypted_symmetric_key("sym.key")
+symkey = load_encrypted_symmetric_key(get_symkey_filepath())
 symkey = decrypt_with_private_key(privkey, symkey)
 
 f = Fernet(symkey)
