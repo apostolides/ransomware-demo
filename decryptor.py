@@ -69,17 +69,25 @@ def decrypt_file(filepath, fernetobj):
         original_file.write(original_content)
         original_file.close()
 
-privkey = load_private_key()
-symkey = load_encrypted_symmetric_key(utils.get_symkey_filepath())
-symkey = decrypt_with_private_key(privkey, symkey)
-
-f = Fernet(symkey)
-
-for dir in utils.get_target_directories():
-    for path, curdir, files in os.walk(dir):
+def crawl(basedir):
+    for path, curdir, files in os.walk(basedir):
+        for dir in utils.get_unwanted_directories():
+            try:
+                curdir.remove(dir)
+            except:
+                pass
         for file in files:
             filepath = os.path.join(path, file)
             if filepath.endswith(".enc"):
                 print(filepath)
                 decrypt_file(filepath, f)
                 utils.remove_file(filepath)
+
+if __name__ == "__main__":
+    privkey = load_private_key()
+    symkey = load_encrypted_symmetric_key(utils.get_symkey_filepath())
+    symkey = decrypt_with_private_key(privkey, symkey)
+    f = Fernet(symkey)
+    for dir in utils.get_target_directories():
+        crawl(dir)
+ 
