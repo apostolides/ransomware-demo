@@ -80,8 +80,11 @@ def crawl(basedir):
             filepath = os.path.join(path, file)
             if filepath.endswith(".enc"):
                 print(filepath)
-                decrypt_file(filepath, f)
-                utils.remove_file(filepath)
+                try:
+                    decrypt_file(filepath, f)
+                    utils.remove_file(filepath)
+                except:
+                    pass
 
 if __name__ == "__main__":
     privkey = load_private_key()
